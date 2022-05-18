@@ -8,7 +8,26 @@ $textcolor: #eeeeee; // Text Color
 $bgfooter: #313030; // Footer background color
 $lineheight: 1.2; // Document Line Height
 $userfont: 'Montserrat', sans-serif; // User Font Family
-$systemfont: -apple-system, BlinkMacSystemFont, Arial, sans-serif; // System Font Family
+$systemfont: -apple-system, BlinkMacSystemFont, Arial, sans-serif; // System Font
+
+$maxWidthContainer: 1400;
+$maxWidth: 1400;
+@mixin adaptiv-value($property, $startSize, $minSize, $type) {
+	$addSize: $startSize - $minSize;
+	@if $type==1 {
+		#{$property}: $startSize + px;
+		@media (max-width: #{$maxWidthContainer + px}) {
+			#{$property}: calc(#{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidthContainer - 320}));
+		}
+	} @else if $type==2 {
+		#{$property}: $startSize + px;
+		@media (min-width: #{$maxWidthContainer + px}) {
+			#{$property}: calc(#{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth - 320}));
+		}
+	} @else {
+		#{$property}: calc(#{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth - 320}));
+	}
+}
 
 ::placeholder {
 	color: #666;
@@ -55,6 +74,9 @@ body {
 
 	&__items {
 		display: flex;
+		@media (max-width: 991.98px) {
+			flex-direction: column;
+		}
 	}
 
 	// .page__item
@@ -67,10 +89,17 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-direction: column;
 		width: 60%;
+		@media (max-width: 991.98px) {
+			width: 100%;
+		}
+
 		&__logo {
 			max-width: 150px;
+			@include adaptiv-value('max-width', 150, 100, 1);
 			margin: 0 auto 30px auto;
+			@include adaptiv-value('margin-bottom', 30, 20, 1);
 			img {
 				display: block;
 				width: 100%;
@@ -81,17 +110,9 @@ body {
 	.item--right {
 		position: relative;
 		width: 40%;
-		// img {
-		// 	display: block;
-		// 	position: absolute;
-		// 	top: 0;
-		// 	left: 0;
-		// 	width: 100%;
-		// 	height: 100%;
-		// 	object-fit: cover;
-		// 	z-index: 0;
-		// 	opacity: .4;
-		// }
+		@media (max-width: 991.98px) {
+			width: 100%;
+		}
 		&__bg {
 			position: absolute;
 			top: 0;
@@ -100,33 +121,23 @@ body {
 			height: 100%;
 			object-fit: cover;
 			z-index: 1;
-			opacity: .4;
-		}
-
-		&__logo {
-			position: absolute;
-			bottom: 40px;
-			right: 40px;
-			max-width: 150px;
-			z-index: 22;
-			img {
-				display: block;
-				width: 100%;
-			}
+			opacity: 0.4;
 		}
 	}
 
 	// .page__title
 
 	&__title {
-		text-align: center;		
+		text-align: center;
 		padding: 20px;
 		overflow: hidden;
 		h1 {
 			position: relative;
 			font-size: 95px;
+			@include adaptiv-value('font-size', 95, 35, 1);
 			font-weight: 100;
 			margin: 0 0 50px;
+			@include adaptiv-value('margin-bottom', 50, 30, 1);
 			text-transform: uppercase;
 			&::after {
 				content: '';
@@ -134,7 +145,7 @@ body {
 				height: 1px;
 				width: 80%;
 				background-color: $textcolor;
-				opacity: .3;
+				opacity: 0.3;
 				bottom: -20px;
 				left: 50%;
 				transform: translateX(-50%);
@@ -148,8 +159,42 @@ body {
 			font-weight: 300;
 			margin: 0 auto;
 			max-width: 660px;
+			width: 100%;
+			@include adaptiv-value('font-size', 25, 16, 1);
 		}
 	}
+}
+
+.page-info {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;	
+	background-color: #303030;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	padding: 15px;
+	margin-left: 20px;
+	@media (max-width: 991.98px) {
+		left: 20px;
+		margin-left: 0;
+	}
+	@media (max-width: 440px) {
+		flex-direction: column;
+	}
+	&__text {
+		padding-left: 15px;
+		text-align: start;
+		@media (max-width: 440px) {
+			text-align: center;
+		}
+		p {
+			margin: 0 0 10px;
+			line-height: 1.4;
+		}
+	}
+
+	// .page-info__link
 
 	&__link {
 		display: block;
@@ -160,6 +205,19 @@ body {
 			&:hover {
 				color: darken($color: $accent, $amount: 20);
 			}
+		}
+	}
+
+	// .page-info__qr
+
+	&__qr {
+		max-width: 100px;
+		@media (max-width: 440px) {
+			margin-bottom: 20px;
+		}
+		img {
+			display: block;
+			width: 100%;
 		}
 	}
 }
